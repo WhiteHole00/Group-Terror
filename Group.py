@@ -44,7 +44,7 @@ if __name__ == "__main__":
                     js = {
                         'name': name
                     }
-                    res = requests.patch(f'https://discord.com/api/v9/channels/{data["id"]}', headers=header(),json=js)
+                    res = requests.patch(f'https://discord.com/api/v10/channels/{data["id"]}', headers=header(),json=js)
 
                     if res.status_code == 200 or res.status_code == 204 or res.status_code == 201:
                         print("SUCCESS | {}".format(name))
