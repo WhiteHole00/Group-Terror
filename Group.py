@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
                     if res.status_code == 200 or res.status_code == 204 or res.status_code == 201:
                         print("SUCCESS | {}".format(name))
-                        resp = requests.put(f'https://discord.com/api/v9/channels/{data["id"]}/recipients/{add}', headers=header())
+                        resp = requests.put(f'https://discord.com/api/v10/channels/{data["id"]}/recipients/{add}', headers=header())
                         if resp.status_code == 200 or resp.status_code == 204 or resp.status_code == 201:
                             print(f"{data['id']} | {add} 추가 성공!")
                         elif resp.status_code == 429:
