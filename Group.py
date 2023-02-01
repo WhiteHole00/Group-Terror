@@ -47,10 +47,28 @@ if __name__ == "__main__":
                     res = requests.patch(f'https://discord.com/api/v10/channels/{data["id"]}', headers=header(),json=js)
 
                     if res.status_code == 200 or res.status_code == 204 or res.status_code == 201:
+                        with open("ids.txt", "a") as wr:
+                            wr.write(f"{data['id']}\n")
                         print("SUCCESS | {}".format(name))
                         resp = requests.put(f'https://discord.com/api/v10/channels/{data["id"]}/recipients/{add}', headers=header())
                         if resp.status_code == 200 or resp.status_code == 204 or resp.status_code == 201:
-                            print(f"{data['id']} | {add} 추가 성공!")
+                            pay_load = {
+                                "content":f"<@{add}> By WhiteHole"
+                            }
+                            mass_ = requests.post(f"https://discord.com/api/v10/channels/{data['id']}/messages",headers=header(),json=pay_load)
+                            if mass_.status_code == 200 or mass_.status_code == 204 or mass_.status_code == 201:
+                                print(f"{data['id']} | {add} 추가 성공!")
+                                ids = open('ids.txt','r',encoding="UTF-8")
+                                room_id = ids.read().split("\n")
+                                for channel_id in room_id:
+                                    leave = requests.delete(f"https://discord.com/api/v10/channels/{channel_id}",headers=header())
+                                    if leave.status_code == 200 or leave.status_code == 204 or leave.status_code == 201:
+                                        print(f"그룹 나가기 성공 | {channel_id}")                            
+                                    else:
+                                        pass
+                                        #print(f"그룹 나가기 실패 | {channel_id}")
+                            else:
+                                print(f"{data['id']} | {add} 추가 실패")
                         elif resp.status_code == 429:
                             input(f"{resp.json()['retry_after']} 후에 다시 시도 해 주세요.")
                         else:
@@ -58,7 +76,6 @@ if __name__ == "__main__":
                     else:
                         print("FAIL | {}".format(name))
                 input("모든 작업이 완료 되었습니다.")
-
             except Exception as e:
                 print(e)
                 input(f"{data['retry_after']}초 후에 다시 이용 해 주세요.")
