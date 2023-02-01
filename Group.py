@@ -7,11 +7,18 @@ if __name__ == "__main__":
         import json
         import random
         from time import sleep
-        os.path.isfile("token.txt")
+        if os.path.isfile("token.txt") and os.path.isfile("keywords.txt"):
+            pass
+        else:
+            t = open("token.txt","w")
+            t.close()
+            
+            k = open("keywords.txt","w")
+            k.close
     except Exception as e:
         os.system("pip install discum")
         os.system("pip install requests")
-        os.system("pathlib")
+        os.system("pip install pathlib")
         input("모듈 설치를 완료 하였습니다.\ntoken.txt 를 만들고 안에 토큰을 넣어 주세요.")
     else:
         count = int(input("만드실 횟수를 입력 해 주세요 >> "))
@@ -30,6 +37,7 @@ if __name__ == "__main__":
                 return headers
             random_name = open('keywords.txt','r',encoding="UTF-8")
             name = random.choice(random_name.read().split("\n"))
+            ch_id = []
             print(name)
             try:
                 for _ in range(1, count+1):
@@ -47,8 +55,7 @@ if __name__ == "__main__":
                     res = requests.patch(f'https://discord.com/api/v10/channels/{data["id"]}', headers=header(),json=js)
 
                     if res.status_code == 200 or res.status_code == 204 or res.status_code == 201:
-                        with open("ids.txt", "a") as wr:
-                            wr.write(f"{data['id']}\n")
+                        ch_id.append(data['id'])
                         print("SUCCESS | {}".format(name))
                         resp = requests.put(f'https://discord.com/api/v10/channels/{data["id"]}/recipients/{add}', headers=header())
                         if resp.status_code == 200 or resp.status_code == 204 or resp.status_code == 201:
@@ -58,15 +65,13 @@ if __name__ == "__main__":
                             mass_ = requests.post(f"https://discord.com/api/v10/channels/{data['id']}/messages",headers=header(),json=pay_load)
                             if mass_.status_code == 200 or mass_.status_code == 204 or mass_.status_code == 201:
                                 print(f"{data['id']} | {add} 추가 성공!")
-                                ids = open('ids.txt','r',encoding="UTF-8")
-                                room_id = ids.read().split("\n")
-                                for channel_id in room_id:
+                                for channel_id in ch_id:
                                     leave = requests.delete(f"https://discord.com/api/v10/channels/{channel_id}",headers=header())
                                     if leave.status_code == 200 or leave.status_code == 204 or leave.status_code == 201:
                                         print(f"그룹 나가기 성공 | {channel_id}")                            
                                     else:
+                                        print(f"그룹 나가기 실패 | {channel_id}")
                                         pass
-                                        #print(f"그룹 나가기 실패 | {channel_id}")
                             else:
                                 print(f"{data['id']} | {add} 추가 실패")
                         elif resp.status_code == 429:
