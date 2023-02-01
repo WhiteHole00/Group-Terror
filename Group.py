@@ -14,7 +14,7 @@ if __name__ == "__main__":
             t.close()
             
             k = open("keywords.txt","w")
-            k.close
+            k.close()
     except Exception as e:
         os.system("pip install discum")
         os.system("pip install requests")
